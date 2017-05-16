@@ -6,7 +6,7 @@ source("./R/RK4.R")
 
 
 
-setClass("Pendulum", slots = c(
+setClass("PendulumRK4", slots = c(
     omega0Squared = "numeric",
     state = "numeric",
     odeSolver = "RK4"
@@ -18,25 +18,28 @@ setClass("Pendulum", slots = c(
     contains = c("ODE")
     )
 
-setMethod("initialize", "Pendulum", function(.Object) {
+setMethod("initialize", "PendulumRK4", function(.Object) {
     .Object@odeSolver <- RK4(.Object)                               
     return(.Object)
 })
 
-setMethod("setStepSize", "Pendulum", function(object, stepSize, ...) {
-    object@odeSolver <- setStepSize(object@odeSolver, stepSize)
+setMethod("setStepSize", signature("PendulumRK4"), function(object, dt, ...) {
+    # use explicit parameter declaration
+    # setStepSize generic may use two different step parameters: stepSize and dt
+    object@odeSolver <- setStepSize(object@odeSolver, dt)
     object
 })
 
 
-setMethod("step", "Pendulum", function(object) {
+
+setMethod("step", "PendulumRK4", function(object) {
     object@odeSolver <- step(object@odeSolver)
     object@rate  <- object@odeSolver@ode@rate                           
     object@state <- object@odeSolver@ode@state                          
     object
 })
 
-setMethod("setState", "Pendulum", function(object, theta, thetaDot) {
+setMethod("setState", "PendulumRK4", function(object, theta, thetaDot) {
     object@state[1] <- theta     # angle
     object@state[2] <- thetaDot  # derivative of angle
     #                              state[3] is time
@@ -44,12 +47,12 @@ setMethod("setState", "Pendulum", function(object, theta, thetaDot) {
     object
 })
 
-setMethod("getState", "Pendulum", function(object) {                
+setMethod("getState", "PendulumRK4", function(object) {                
     object@state
 })
 
 
-setMethod("getRate", "Pendulum", function(object, state, rate) {    
+setMethod("getRate", "PendulumRK4", function(object, state, rate) {    
     rate[1] <- state[2]     # rate of change of angle                                      # diff 11
     rate[2] <- -object@omega0Squared * sin(state[1])  # rate of change of dtheta                 
     rate[3] <- 1            # rate of change of time, dt/dt
@@ -61,4 +64,4 @@ setMethod("getRate", "Pendulum", function(object, state, rate) {
 
 
 # constructor
-Pendulum <- function()  new("Pendulum")
+PendulumRK4 <- function()  new("PendulumRK4")
