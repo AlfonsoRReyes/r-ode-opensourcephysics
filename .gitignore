@@ -18,3 +18,5 @@ vignettes/*.pdf
 
 # Java excludes
 *.class
+#.metadata
+.metadata/
