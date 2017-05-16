@@ -14,4 +14,16 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src/org/opensourcephysics/sip/ch04/Pendulum.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_csm/src/org/opensourcephysics/sip/ch04/Pendulum.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/sip/ch04/PendulumApp.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_csm/src/org/opensourcephysics/sip/ch04/PendulumApp.java</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
