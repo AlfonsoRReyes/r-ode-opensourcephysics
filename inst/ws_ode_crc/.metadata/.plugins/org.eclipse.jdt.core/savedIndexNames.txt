@@ -1,0 +1,24 @@
+INDEX VERSION 1.127+C:\Users\msfz751\Desktop\git.public\java-opensourcephysics\ws_ode_crc\.metadata\.plugins\org.eclipse.jdt.core
+550110297.index
+3070474258.index
+3478988301.index
+2544869149.index
+481222909.index
+1409318731.index
+909319192.index
+1110235742.index
+3113725113.index
+559185590.index
+4119792506.index
+562064736.index
+141394044.index
+4255053731.index
+4193286263.index
+2507802116.index
+652538458.index
+3570358716.index
+3223388287.index
+2889955125.index
+1221445433.index
+1250717821.index
+3747469423.index

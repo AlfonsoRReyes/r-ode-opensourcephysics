@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;RK4/src/org/opensourcephysics/manual/ch09/ComparisonApp.java&apos; to &apos;ComparisonRK45App.java&apos;" description="Rename resource &apos;ComparisonApp.java&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/org/opensourcephysics/manual/ch09/ComparisonApp.java" name="ComparisonRK45App.java" stamp="1494606948369" updateReferences="true"/>
+</session>

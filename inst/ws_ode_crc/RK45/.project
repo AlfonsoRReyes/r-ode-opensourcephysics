@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>RK45</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>src/org/opensourcephysics/manual/ch09/AdaptiveStepApp.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_guide/src/org/opensourcephysics/manual/ch09/AdaptiveStepApp.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/manual/ch09/SHO.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_guide/src/org/opensourcephysics/manual/ch09/SHO.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/manual/ch09/SHOApp.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_guide/src/org/opensourcephysics/manual/ch09/SHOApp.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/davidson/ode/basic_examples/Kepler.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/ode_crc/src/org/opensourcephysics/davidson/ode/basic_examples/Kepler.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/davidson/ode/basic_examples/KeplerApp.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/ode_crc/src/org/opensourcephysics/davidson/ode/basic_examples/KeplerApp.java</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>
