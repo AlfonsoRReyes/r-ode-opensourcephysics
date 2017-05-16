@@ -1,6 +1,8 @@
-####################
-# Pendulum.R
-#
+#' ###################
+#' PendulumEuler.R
+#' 
+#' The original Pendulum uses Euler-Richardson solver
+#' 
 source("./R/ODE.R")
 source("./R/Euler.R")
 

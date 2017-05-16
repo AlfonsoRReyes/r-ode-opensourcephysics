@@ -1,6 +1,7 @@
-####################
-# PendulumRK4.R
-#
+#' ###################
+#' PendulumRK4.R 
+#' 
+#' The original Pendulum uses Euler-Richardson solver
 source("./R/ODE.R")
 source("./R/RK4.R")
 
