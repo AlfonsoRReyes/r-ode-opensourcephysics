@@ -1,0 +1,81 @@
+---
+title: "ComparisonRK45App"
+output: html_notebook
+---
+
+
+```{r}
+# Test RK45
+
+source("./R/ode_generics.R")
+source("./R/RK45.R")
+source("./R/ODETest.R")
+
+ode <- new("ODETest")
+
+ode_solver <- RK45(ode)
+
+ode_solver <- setStepSize(ode_solver, 1)
+ode_solver <- setTolerance(ode_solver, 1e-8)
+
+time <-  0
+# state <- getState(ode)
+# state
+# ode_solver@ode@state <- state
+# ode_solver@numStages
+# ode_solver@numEqn
+# ode_solver@tol
+# ode_solver@stepSize
+
+
+
+while (time < 50) {
+    ode_solver <- step(ode_solver)
+    stepSize <-  ode_solver@stepSize
+    time <- time + stepSize
+    # ode <- ode_solver@ode
+    state <- getState(ode_solver@ode)
+    cat("time=", time, "\t xl=", state[1], "\t error=", 
+        (state[1] - getExactSolution(ode_solver@ode, time)), ode_solver@ode@n, "\n")
+}
+cat("rate evaluated #", ode@n, ode_solver@ode@n)
+
+```
+
+
+```{r}
+# Test RK4
+source("./R/ode_generics.R")
+source("./R/EulerRichardson.R")
+source("./R/ODETest.R")
+
+ode <- new("ODETest")
+
+ode_solver <- EulerRichardson(ode)
+
+ode_solver <- setStepSize(ode_solver, 1)
+# ode_solver <- setTolerance(ode_solver, 1e-8)
+
+time <-  0
+state <- getState(ode)
+state
+ode_solver@ode@state <- state
+# ode_solver@numStages
+ode_solver@numEqn
+# ode_solver@tol
+ode_solver@stepSize
+
+while (time < 50) {
+    time <- time + 1
+    ode_solver <- step(ode_solver)
+    # ode <- ode_solver@ode
+    state <- getState(ode_solver@ode)
+    cat("time=", time, "\t xl=", state[1], "\t error=", 
+        (state[1] - getExactSolution(ode_solver@ode, time)), ode_solver@ode@n, ode@n, "\n")
+}
+cat("rate evaluated #", ode@n, ode_solver@ode@n)
+```
+
+
+
+

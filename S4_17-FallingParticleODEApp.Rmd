@@ -1,0 +1,140 @@
+---
+title: 'FallingParticleApp - Euler ODE SOlver'
+output:
+  html_document: default
+  html_notebook: default
+---
+
+## Running Euler ODE
+> Lessons learned: 
+
+* generic functions should be ONLY called from the main application and
+should not be called from each of the scripts because they start overwriting
+each other.
+
+* Do not repeat generic functions
+
+* Use boolean comparisons to unit test parts of a script
+
+```{r}
+# ###########################
+# FallingParticleApp
+#
+source("./R/ode_generics.R")
+source("./R/FallingParticleODE.R")
+source("./R/Euler.R")
+
+initial_y <- 10
+initial_v <- 0
+dt <- 0.01
+
+ball <- FallingParticleODE(initial_y, initial_v)
+
+eusolver <- Euler(ball)
+eusolver <- setStepSize(eusolver, dt)
+
+# stop loop when the ball hits the ground
+while (ball@state[1] > 0) {
+    eusolver <- step(eusolver)
+    ball <- eusolver@ode
+    cat(sprintf("%12f %12f ",  ball@state[1], ball@rate[1] ))
+    cat(sprintf("%12f %12f ",  ball@state[2], ball@rate[2] ))
+    cat(sprintf("%12f %12f\n", ball@state[3], ball@rate[3] ))
+}
+```
+
+```{r}
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  + + unit tests
+library(testthat)
+
+source("./R/ode_generics.R")
+source("./R/FallingParticleODE.R")
+source("./R/Euler.R")
+
+initial_y <- 10
+initial_v <- 0
+dt <- 0.1
+
+ball <- FallingParticleODE(initial_y, initial_v)
+
+expect_true(ball@g == 9.8)
+expect_equal(ball@state, c(10, 0, 0))
+
+eusolver <- Euler(ball)
+eusolver <- setStepSize(eusolver, dt)
+
+expect_equal(getStepSize(eusolver), dt)
+expect_equal(eusolver@stepSize, getStepSize(eusolver))
+expect_equal(eusolver@ode@rate, c(0, 0, 0))
+
+eusolver <- step(eusolver)
+rate <- eusolver@ode@rate
+
+while (ball@state[1] > 0) {
+    eusolver <- step(eusolver)
+    ball <- eusolver@ode
+    cat(sprintf("%12f %12f ",  ball@state[1], ball@rate[1] ))
+    cat(sprintf("%12f %12f ",  ball@state[2], ball@rate[2] ))
+    cat(sprintf("%12f %12f\n", ball@state[3], ball@rate[3] ))
+    expect_false(all(eusolver@ode@state == c(10, 0, 0)))  # step makes the original state vector to change
+}
+
+expect_equal(round(ball@state[1], 5), -0.29)      # obtained with dt = 0.1
+expect_equal(getStepSize(eusolver), dt)
+expect_equal(c(ball@state[1], ball@rate[1], 
+              ball@state[2], ball@rate[2], 
+              ball@state[3], ball@rate[3]), 
+            c(-0.290000,   -13.720000,   
+             -14.700000,    -9.800000,     
+             1.500000,     1.000000))
+```
+
+
+
+
+
+
+```{r}
+# testing FallinParticleODE by creating a loop doing the stepping.
+# The stepping is usually controllled by the ODE solver which could
+# be Euler, Euler-Richardson
+
+source("./R/ode_generics.R")
+source("./R/FallingParticleODE.R")
+
+
+# state <- c(1, 0, 0)
+rate <- c(0, 0, 0)
+
+ball <- FallingParticleODE(10, 0)
+# Slot "state":
+# [1] 10  0  0             # with return(.Object)
+
+ball@g
+state <- getState(ball)
+state
+
+rate <- getRate(ball, state, rate)
+rate
+
+stepSize <- 0.1
+numEqn <- length(state)
+
+# this loop will stop when ball@state[1] is zero or lower
+while (ball@state[1] > 0) {
+    # start the step()
+    state <- getState(ball)
+    rate  <- getRate(ball, state, rate)
+
+    for (i in 1:numEqn) {
+        state[i] <- state[i] + stepSize * rate[i]
+        cat(sprintf("%3d %10f %10f \n", i, state[i], rate[i]))
+
+    }
+    ball@state <- state
+    ball@rate <-  rate
+}
+
+```
+
+

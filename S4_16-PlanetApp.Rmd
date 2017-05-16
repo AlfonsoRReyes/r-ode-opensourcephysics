@@ -1,0 +1,405 @@
+---
+title: "PlanetApp  - Euler ODE solver"
+output: html_notebook
+---
+
+
+```{r}
+# #################
+# PlanetApp
+#
+#
+source("./R/ode_generics.R")
+source("./R/Planet.R")
+
+# x =  1, AU or Astronomical Units. Length of semimajor axis or the orbit of the Earth around the Sun.
+
+x <- 1; vx <- 0; y <- 0; vy <- 6.28; t <- 0
+state <- c(x, vx, y, vy, t)
+dt <-  0.01
+
+planet <- Planet()
+
+planet@odeSolver <- setStepSize(planet@odeSolver, dt)
+planet <- init(planet, initState = state)
+
+# run infinite loop. stop with ESCAPE.
+while (planet@state[5] <= 365) {     # Earth orbit is 365 days around the sun
+    for (i in 1:5) {                 # advances time
+        planet <- doStep(planet)
+    }
+    cat(sprintf("%12f %12f %12f %12f %12f \n", 
+                planet@state[1], planet@state[2], planet@state[3],
+                planet@state[4], planet@state[5]))
+}
+
+```
+
+## unit tests
+
+```{r}
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++unit tests
+library(testthat)
+
+source("./R/ode_generics_planet.R")
+source("./R/Planet.R")
+
+state <- c(1, 0, 0, 6.28, 0)
+rate <- c(0, 0, 0, 0, 0)
+dt <- 0.01
+
+planet <- Planet()
+
+    expect_true(class(planet) == "Planet")
+    expect_true(class(planet@odeSolver) == "Euler")
+                                    expect_equal(length(planet@odeSolver@ode@state), 0)
+                                    
+    expect_equal(length(planet@odeSolver@ode@rate), 0)
+    expect_equal(length(planet@rate), 0)
+    
+    expect_true(planet@odeSolver@stepSize == 0.1)       # 0.1 is the default value
+    expect_true(planet@odeSolver@numEqn == 0)
+
+planet@odeSolver <- setStepSize(planet@odeSolver, dt)
+    expect_true(planet@odeSolver@stepSize == dt)
+
+
+planet <- init(planet, state)
+    expect_equal(planet@odeSolver@ode@state, state)
+
+    expect_equal(planet@odeSolver@ode@rate, rate)  # [1] 0 0 0 0 0
+    expect_equal(planet@rate, rate)
+
+    expect_equal(planet@odeSolver@numEqn, 5)
+    expect_equal(planet@odeSolver@stepSize, dt)
+
+
+planet <- doStep(planet)
+    expect_equal(planet@state, state)
+    expect_equal(planet@rate, rate)
+
+    
+planet <- doStep(planet)
+    expect_equal(planet@state, state)
+    expect_equal(planet@rate, rate)
+
+```
+
+
+```{r}
+
+library(testthat)
+
+source("./R/ode_generics_planet.R")
+source("./R/Planet.R")
+
+state <- c(1, 0, 0, 6.28, 0)
+rate <- c(0,0,0,0,0)
+dt <- 0.01
+planet <- new("Planet")
+
+    expect_true(class(planet) == "Planet")
+    expect_true(class(planet@odeSolver) == "Euler")
+    expect_equal(length(planet@odeSolver@ode@state), 0)
+    expect_equal(length(planet@odeSolver@rate), 0)
+    expect_true(planet@odeSolver@stepSize == 0.1)       # 0.1 is the default value
+    expect_true(planet@odeSolver@numEqn == 0)
+
+planet@odeSolver <- setStepSize(planet@odeSolver, dt)
+
+    expect_true(planet@odeSolver@stepSize == dt)
+
+
+planet <- init(planet, state)
+    expect_equal(planet@odeSolver@ode@state, state)
+    # object@ode@rate
+    expect_equal(planet@odeSolver@ode@rate, rate)
+    planet@odeSolver@ode@rate
+    planet@test_1@rate
+    expect_equal(planet@test_1@numEqn, 5)
+    expect_equal(planet@test_1@stepSize, dt)
+    expect_true(class(planet@test_1) == "Euler")
+    # expect_true(class(planet@odeSolver) == "Euler")
+
+planet <- doStep(planet)
+planet@state
+planet@rate
+    
+```
+
+
+
+
+
+```{r}
+source("./R/ode_generics_planet.R")
+source("./R/Planet.R")
+
+state <- c(1, 0, 0, 6.28, 0)
+planet <- new("Planet")
+
+# class(planet)
+round(planet@GM, 5) == 12.56637
+# 12.56637
+planet@state
+# 0 0 0 0 0
+planet <- init(planet, state)
+planet@GM
+# class(planet)
+# "Planet"
+planet@state
+# 1.00 0.00 0.00 6.28 0.00
+cat("-------------------------------\n")
+res <- setStepSize(planet@odeSolver, 0.001)
+getStepSize(res)  == 0.001# res is of class Euler
+# [1] 0.001
+cat("+++++++++++++++++++++++\n")
+
+planet <- init(planet, state)
+getState(planet) == c(1.00, 0.00, 0.00, 6.28, 0.00)
+# [1] 1.00 0.00 0.00 6.28 0.00
+
+planet@odeSolver@numEqn
+
+for (i in 1:5) {
+    planet <- doStep(planet)
+    cat("s[5]: ", planet@state[5], "\n")
+}
+```
+
+
+
+```{r}
+source("./R/ode_generics.R")
+source("./R/ODE.R")
+source("./R/Euler.R")
+
+ode <- new("ODE")
+euler <- new("Euler", ode)
+class(euler)
+
+# euler@stepSize <- step(euler)
+getStepSize(euler)
+# 0.1
+euler <- setStepSize(euler, 0.1234)
+getStepSize(euler)
+# [1] 0.1234
+
+init(euler, stepSize = 1.234)    # specify param if many generics with same name
+step(euler)
+
+euler@ode@state <- c(1, 0, 0, 6.28, 0)
+getState(euler@ode)
+# [1] 1.00 0.00 0.00 6.28 0.00
+
+euler@ode@state <- getState(euler@ode) 
+euler@ode@state
+# [1] 1.00 0.00 0.00 6.28 0.00
+
+step(euler)
+
+# euler@stepSize <- step(euler)
+# euler@numEqn
+# 
+
+# more tests. this time assigning the state vector
+ode <- new("ODE")
+ode@state <- c(1, 0, 0, 6.28, 0)
+euler <- new("Euler", ode)
+euler <- init(euler, 0.0123)
+euler@numEqn
+# 5
+getStepSize(euler)
+# [1] 0.0123
+
+```
+
+
+
+```{r}
+# this is a virtual class
+source("./R/ODESolver.R")
+
+ode <- new("ODE")
+
+odesolver <- new("ODESolver", ode)
+getStepSize(odesolver)
+# 0.1
+# Error in new("ODESolver") : 
+ # trying to generate an object from a virtual class ("ODESolver")
+st <- step(odesolver)
+# odesolver <- setStepSize(odesolver, 1.125)
+odesolver <- setStepSize(odesolver, 0.001)
+getStepSize(odesolver)
+
+odesolver <- init(odesolver, 2.345)
+getStepSize(odesolver)
+# 2.345
+
+# assign a vector to variable ode in odesolver
+odesolver@ode@state <- c(1, 0, 0, 6.28, 0)
+odesolver@ode@state
+# [1] 1.00 0.00 0.00 6.28 0.00
+
+getState(odesolver@ode)
+# [1] 1.00 0.00 0.00 6.28 0.00
+
+
+# more tests. this time assigning the state vector
+ode <- new("ODE")
+ode@state <- c(1, 0, 0, 6.28, 0)
+odesolver <- new("ODESolver", ode)
+odesolver <- init(odesolver, 0.0123)
+odesolver@numEqn
+# 5
+getStepSize(odesolver)
+# [1] 0.0123
+```
+
+```{r}
+source("./R/ODE.R")
+
+ode <- new("ODE")
+getState(ode)
+getRate(ode)
+
+ode@state <- c(1, 0, 0, 6.28, 0)
+getState(ode)
+# 1.00 0.00 0.00 6.28 0.00
+getRate(ode)
+```
+
+
+
+
+
+
+
+
+
+```{r}
+planet <- new("Planet")
+
+dt <- 0.01
+x  <- 1
+vx <- 0
+y  <- 0
+vy <- 6.28
+
+setStepSize(planet@odeSolver, dt)
+init(planet, c(x, vx, y, vy, 0))
+
+for (i in 1:5)
+    doStep(planet)
+```
+
+
+
+```{r}
+.initState <- vector("numeric")
+p <- new("Planet")
+# p <- doStep(p)
+
+
+init(p, .initState)
+```
+
+
+```{r}
+ode <- new("ODE")
+odeSolver <- Euler(ode)
+
+step(odeSolver)
+# odeSolver@
+```
+
+
+
+```{r}
+ode <- new("ODE")
+eu <- Euler(ode)
+step(eu)
+```
+
+```{r}
+ode <- new("ODE")
+ode@whois
+getState(ode)
+getRate(ode)
+ode
+```
+
+```{r}
+# cannot initialize a virtual class
+solver <- new("ODESolver")
+solver
+```
+
+
+
+```{r}
+ode <- new("ODE")
+abstract <- new("AbstractODESolver", ode)
+abstract@numEqn <- 1
+
+# call functions in ODE
+getState(abstract@ode)   # using a slot in AbstractODESolver
+getRate(ode)             # using the ode object declared with ODE
+                         # We shouldn't do this. Use rather the slot 
+getRate(abstract@ode)    # this is the correct way
+
+init(abstract@ode, 4)
+step(abstract)
+abstract <- setStepSize(abstract, 3)
+
+getStepSize(abstract)
+
+slot(abstract, "numEqn")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# PlanetApp
+source("./R/Planet.R")
+
+testPlanet <- function() {
+    planet@odeSolver@stepSize
+    planet@state
+}
+
+setup <- function() {
+    setStepSize(planet@odeSolver, 0.01)
+    
+    planet <- init(planet, state)
+}
+
+run <- function() {
+    for (i in 1:5) {
+        planet <- doStep(planet)
+        cat(planet@state[5], "\n")
+    }
+}
+
+state <- c(1, 0, 0, 6.28, 0)
+planet <- new("Planet")
+
+setup()
+testPlanet()
+
+# run()
+```
