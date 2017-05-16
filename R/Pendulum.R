@@ -1,11 +1,10 @@
-# Pendulum.R
+#' Pendulum.R
+#' 
+#' Original Pendulum class uses Euler-Richardson solver
 
 source("./R/ODE.R")
 source("./R/EulerRichardson.R")
 
-
-# setGeneric("setState", function(object, theta, thetaDot, ...)
-#     standardGeneric("setState"))
 
 
 setClass("Pendulum", slots = c(
