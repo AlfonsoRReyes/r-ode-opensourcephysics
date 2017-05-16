@@ -1,7 +1,0 @@
-INDEX VERSION 1.127+C:\Users\msfz751\Desktop\git.public\r-ode-opensourcephysics\inst\ws_ode_crc\.metadata\.plugins\org.eclipse.jdt.core
-3366973830.index
-3113725113.index
-3747469423.index
-4255053731.index
-3415426827.index
-3778040590.index
