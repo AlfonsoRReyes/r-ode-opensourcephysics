@@ -20,3 +20,5 @@ vignettes/*.pdf
 *.class
 #.metadata
 .metadata/
+
+*.html
