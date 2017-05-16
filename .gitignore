@@ -17,6 +17,4 @@ vignettes/*.pdf
 .Rproj.user
 
 # Java excludes
-*/bin/
-bin
 *.class
