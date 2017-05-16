@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Euler</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>src/org/opensourcephysics/sip/ch03/FallingParticleODE.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_csm/src/org/opensourcephysics/sip/ch03/FallingParticleODE.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/sip/ch03/FallingParticleODEApp.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_csm/src/org/opensourcephysics/sip/ch03/FallingParticleODEApp.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/sip/ch05/Planet.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_csm/src/org/opensourcephysics/sip/ch05/Planet.java</locationURI>
+		</link>
+		<link>
+			<name>src/org/opensourcephysics/sip/ch05/PlanetApp.java</name>
+			<type>1</type>
+			<locationURI>WORKSPACE_LOC/osp_csm/src/org/opensourcephysics/sip/ch05/PlanetApp.java</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>
