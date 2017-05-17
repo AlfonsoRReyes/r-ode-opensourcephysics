@@ -36,5 +36,5 @@ datatable <- data.table::rbindlist(rowV)
 datatable
 
 
-qplot(state1, state3, data = datatable)
-qplot(state1, state5, data = datatable)
+print(qplot(state1, state3, data = datatable))
+print(qplot(state1, state5, data = datatable))
