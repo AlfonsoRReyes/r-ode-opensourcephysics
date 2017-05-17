@@ -6,7 +6,7 @@ library(data.table)
 library(ggplot2)
 
 source("./R/ode_generics.R")
-source("./R/Projectile.R")
+source("./inst/examples/Projectile.R")
 
 
 x <- 0; vx <- 10; y <- 0; vy <- 10

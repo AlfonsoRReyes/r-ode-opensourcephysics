@@ -6,7 +6,7 @@ library(ggplot2)
 #                                                                   PendulumApp
 source("./R/ode_generics.R")
 source("./R/RK4.R")
-source("./R/PendulumRK4.R")                   # this script uses Euler-Richardson
+source("./inst/examples/PendulumRK4.R")                   # this script uses Euler-Richardson
 
 ode <- new("ODE")
 pendulum <- PendulumRK4()
