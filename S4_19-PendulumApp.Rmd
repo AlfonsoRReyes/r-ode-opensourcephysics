@@ -16,7 +16,7 @@ source("./R/RK4.R")
 source("./R/PendulumRK4.R")                   # this script uses Euler-Richardson
 
 ode <- new("ODE")
-pendulum <- Pendulum()
+pendulum <- PendulumRK4()
 
 dt <- 0.001
 theta <- 0.2
@@ -25,7 +25,7 @@ thetaDot <- 0
 pendulum@state[3] <- 0      # set time to zero, t = 0
 
 pendulum <- setState(pendulum, theta, thetaDot)
-pendulum <- setStepSize(pendulum, stepSize = dt) # using stepSize in RK4
+pendulum <- setStepSize(pendulum, dt = dt) # using stepSize in RK4
 
 pendulum@odeSolver <- setStepSize(pendulum@odeSolver, dt) # set new step size
 
@@ -42,7 +42,7 @@ DTRK4 <- data.table::rbindlist(rowvec)
 
 ggplot(DTRK4, aes(x = state3, y = state1)) + geom_line(col = "blue")
 ggplot(DTRK4, aes(x = state3, y = state2)) + geom_line(col = "red")
-
+save(DTRK4, file = "./data/pendulumRK4_1e-3.rda")
 ```
 
 
@@ -86,6 +86,7 @@ DTER <- data.table::rbindlist(rowvec)
 ggplot(DTER, aes(x = state3, y = state1)) + geom_line(col = "blue")
 ggplot(DTER, aes(x = state3, y = state2)) + geom_line(col = "red")
 
+save(DTER, file = "./data/pendulumDTER_1e-1.rda")
 ```
 
 ## PendulumApp with Euler. With data table
@@ -95,10 +96,10 @@ library(ggplot2)
 # ####################################################  Test Pendulum with Euler
 source("./R/ode_generics.R")
 source("./R/Euler.R")
-source("./R/PendulumE.R")       # Pendulum script with ODE EUler
+source("./R/PendulumEuler.R")       # Pendulum script with ODE EUler
 
 ode <- new("ODE")
-pendulum <- Pendulum()
+pendulum <- PendulumEuler()
 
 dt <- 0.01
 theta <- 0.2
@@ -125,6 +126,8 @@ DTE <- data.table::rbindlist(rowvec)
 
 ggplot(DTE, aes(x = state3, y = state1)) + geom_line(col = "blue")
 ggplot(DTE, aes(x = state3, y = state2)) + geom_line(col = "red")
+
+save(DTE, file = "./data/pendulumDTE_1e-2.rda")
 ```
 
 
