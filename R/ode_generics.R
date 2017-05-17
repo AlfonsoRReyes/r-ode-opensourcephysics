@@ -32,9 +32,9 @@ setGeneric("enableRuntimeExceptions", function(object, enable, ...)
     standardGeneric("enableRuntimeExceptions"))
 
 
-
-
-
+setGeneric("getRateCounter", function(object, ...) standardGeneric("getRateCounter"))
+setGeneric("getTime", function(object, ...) standardGeneric("getTime"))
+setGeneric("getEnergy", function(object, ...) standardGeneric("getEnergy"))
 
 
 # setState
