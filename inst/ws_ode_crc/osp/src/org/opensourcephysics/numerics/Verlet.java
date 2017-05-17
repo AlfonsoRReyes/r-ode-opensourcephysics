@@ -100,32 +100,32 @@ public class Verlet extends AbstractODESolver {
     }
     rateCounter = 0; // getRate has not been called
     ode.getRate(state, rate1); // get the initial rate
-    System.out.println("rate1="+Arrays.toString(rate1));
+//    System.out.println("rate1="+Arrays.toString(rate1));
     
     double dt2 = stepSize*stepSize; // the step size squared
     // increment the positions using the velocity and acceleration
     for(int i = 0; i<numEqn-1; i += 2) {
     	
       state[i] += stepSize*rate1[i] + dt2 * rate1[i+1]/2;
-      System.out.format("i1=%3d state=%12f rate1=%11f \n", i, state[i], rate1[i]);
+//      System.out.format("i1=%3d state=%12f rate1=%11f \n", i, state[i], rate1[i]);
     }
     rateCounter = 1; // getRate has been called once
     ode.getRate(state, rate2); // rate at the new positions
-    System.out.println("rate2="+Arrays.toString(rate2));
+//    System.out.println("rate2="+Arrays.toString(rate2));
 
     rateCounter = 2; // getRate has been called twice
     for(int i = 1; i<numEqn; i += 2) {
     	
       // increment the velocities with the average rate
       state[i] = state[i] + stepSize*(rate1[i]+rate2[i])/2.0;
-      System.out.format("i2=%3d state=%12f rate2=%11f \n", i, state[i], rate2[i]);
+//      System.out.format("i2=%3d state=%12f rate2=%11f \n", i, state[i], rate2[i]);
     }
-    System.out.format("numEqn=%3d \t", numEqn );
     if(numEqn%2==1) {                              // last equation if  we have an odd number of equations
       
       state[numEqn-1] = state[numEqn-1] + stepSize*rate1[numEqn-1]; // usually the independent variable
       
-      System.out.format("numEqn2:%3d, state[numEqn-1]=%12f rate=%12f \n\n", numEqn%2, state[numEqn-1], rate1[numEqn-1]);
+//      System.out.format("numEqn2:%3d, state[numEqn-1]=%12f rate=%12f \n\n", 
+//    		  numEqn%2, state[numEqn-1], rate1[numEqn-1]);
     }
     return stepSize;
   }
