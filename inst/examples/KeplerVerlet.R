@@ -21,9 +21,13 @@ setMethod("initialize", "KeplerVerlet", function(.Object, ...) {
 })
 
 setMethod("doStep", "KeplerVerlet", function(object, ...) {
-    cat("state@doStep=", object@state, "\n")
+    # cat("state@doStep=", object@state, "\n")
     object@odeSolver <- step(object@odeSolver)
-    cat("\t", object@odeSolver@ode@state)
+    
+    object@state <- object@odeSolver@ode@state
+    
+    # object@rate <- object@odeSolver@ode@rate
+    # cat("\t", object@odeSolver@ode@state)
     object
 })
 
@@ -43,7 +47,7 @@ setMethod("init", "KeplerVerlet", function(object, initState, ...) {
     object@state <- initState
     object@odeSolver <- init(object@odeSolver, getStepSize(object@odeSolver))
     
-    object@rate  <- object@odeSolver@ode@rate
+    # object@rate  <- object@odeSolver@ode@rate
     # object@state <- object@odeSolver@ode@state
     
     object@counter <- 0
@@ -60,7 +64,8 @@ setMethod("getRate", "KeplerVerlet", function(object, state, rate, ...) {
     object@rate[4] <- (- object@GM * state[3]) / r3
     object@rate[5] <- 1   # time derivative
     
-    object@state <- object@odeSolver@ode@state <- state
+    # object@state <- object@odeSolver@ode@state <- state
+    # object@state <- state
     object@counter <- object@counter + 1
     object
     
