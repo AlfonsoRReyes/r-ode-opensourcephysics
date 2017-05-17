@@ -46,7 +46,6 @@ setMethod("step", "Verlet", function(object, ...) {
     state <- getState(object@ode)                         # get the state vector
     # cat(sprintf("state=%s \n", state))
     # cat("state:");print(state)
-    # cat(sprintf("stepSize=%8f \n", object@stepSize))
     
     if (length(state) != object@numEqn) {
         object <- init(object, object@stepSize)
@@ -54,6 +53,7 @@ setMethod("step", "Verlet", function(object, ...) {
     
     object@rateCounter <- 0     #  getRate has not been called
     object@rate1 <- getRate(object@ode, state, object@rate1)@rate
+    cat("rate1="); print(object@rate1)
     
     dt2 <- object@stepSize * object@stepSize  # the step size squared
     # cat(sprintf("dt2=%12f \n", dt2))
@@ -69,31 +69,30 @@ setMethod("step", "Verlet", function(object, ...) {
     }
     object@rateCounter <- 1  # getRate has been called once
     object@rate2 <- getRate(object@ode, state, object@rate2)@rate
-    object@rateCounter <- 2
+    cat("rate2="); print(object@rate2)
+    
+    object@rateCounter <- 2  # getRate has been called twice
     
     for (i in seq(2, object@numEqn, 2)) {
         # cat(sprintf("i2=%3d \n", i-1))
         # increment the velocities with the average rate
         state[i] <- state[i] + object@stepSize * (object@rate1[i] +
             object@rate2[i]) / 2.0 
-        # cat(sprintf("i2=%3d, state2=%12f, @rate2=%12f \n", i, state[i], object@rate2[i]))
+
         cat(sprintf("i2=%3d, state1=%12f, rate2=%11f \n", i-1, state[i], object@rate2[i]))
     }
     cat(sprintf("numEqn=%3d \t", object@numEqn))
     if (object@numEqn%%2 == 1) { # last equation if  we have an odd number of equations
-        
-        state[object@numEqn-1] <- state[object@numEqn-1] +
-            object@stepSize * object@rate1[object@numEqn-1]
-        
-        
-        
+        # in Java this is written like this:
+        #  state[numEqn-1] = state[numEqn-1] + stepSize*rate1[numEqn-1];
+        state[object@numEqn] <- state[object@numEqn] +
+            object@stepSize * object@rate1[object@numEqn]
         
         cat(sprintf("@numEqn2=%3d, state[@numEqn-1]=%12f rate1=%12f\n\n", 
-                    object@numEqn%%2, state[object@numEqn-1], 
-                    object@rate1[object@numEqn-1]))
+                    object@numEqn%%2, state[object@numEqn], 
+                    object@rate1[object@numEqn]))
     }
     object@ode@state <- state
-    # cat(sprintf("stepSize=%8f \n", object@stepSize))
     object                          # use this object to reassign in R
 }) 
 
