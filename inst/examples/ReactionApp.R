@@ -6,8 +6,8 @@
 # a fouth-order Runge-Kutta algorithm.
 
 source("./R/ode_generics.R")
-source("./R/Reaction.R")
 source("./R/RK4.R")
+source("./inst/examples/Reaction.R")
 
 X <- 1; Y <- 5;
 dt <- 0.1

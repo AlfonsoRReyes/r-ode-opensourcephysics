@@ -6,7 +6,7 @@
 
 source("./R/ode_generics.R")
 source("./R/RK45.R")
-source("./R/ODETest.R")           # hold the step and rate
+source("./inst/examples/ODETest.R")           # hold the step and rate
 
 ode <- new("ODETest")
 
