@@ -1,6 +1,6 @@
-#' ComparisonRK45App02.R
+#' ComparisonRK45ODEApp.R
 #' 
-#' Updates ODE state instead of using internal state of ODE in ODE solver
+#' Updates ODE state instead of using internal state in the ODE solver
 #' File ComparisonRK45App.R does npt makde ode abstraction
 #' 
 source("./R/ode_generics.R")
@@ -22,7 +22,10 @@ while (time < 50) {
     time <- time + stepSize
     ode <- ode_solver@ode
     state <- getState(ode)
-    cat("time =", time, "\t xl =", state[1], "\t error =", 
-        (state[1] - getExactSolution(ode, time)), "\t n =", ode@n, "\n")
+    cat(sprintf("time=%10f xl=%14e error=%14e n=%5d \n", 
+                time, 
+                state[1],  
+                (state[1] - getExactSolution(ode_solver@ode, time)),
+                ode_solver@ode@n))
 }
 cat("rate evaluated #", ode@n)
