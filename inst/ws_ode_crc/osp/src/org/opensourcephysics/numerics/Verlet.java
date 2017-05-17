@@ -6,6 +6,7 @@
  */
 
 package org.opensourcephysics.numerics;
+import java.util.Arrays; // added by ARR
 
 /**
  * Verlet:  A velocity Verlet method ODE solver.
@@ -92,6 +93,7 @@ public class Verlet extends AbstractODESolver {
   public double step() {
     // state[]: x1, d x1/dt, x2, d x2/dt .... xN, d xN/dt, t
     double[] state = ode.getState();
+    System.out.print("state:"); System.out.println(Arrays.toString(state));
     if(state.length!=numEqn) {
       initialize(stepSize);
     }
