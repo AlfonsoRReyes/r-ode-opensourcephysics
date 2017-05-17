@@ -52,6 +52,7 @@ public class KeplerApp extends AbstractSimulation implements PropertyChangeListe
     orbitFrame.setMessage("t = "+decimalFormat.format(particle.state[4]));
     energyFrame.setMessage("E="+energy, DrawingPanel.TOP_RIGHT);
     energyFrame.setMessage("rate evals="+particle.counter, DrawingPanel.BOTTOM_LEFT);
+    System.out.format("time=%12f energy=%12f state[4]=%12f \n", particle.getTime(), energy, particle.state[4]  );
   }
 
   /**
@@ -90,7 +91,8 @@ public class KeplerApp extends AbstractSimulation implements PropertyChangeListe
    * Resets simulation to a predefined state.
    */
   public void reset() {
-    control.setValue("ODE Solver", "CashKarp45");
+//    control.setValue("ODE Solver", "CashKarp45");
+    control.setValue("ODE Solver", "Verlet");
     control.setValue("x", 1);
     control.setValue("vx", 0);
     control.setValue("y", 0);
