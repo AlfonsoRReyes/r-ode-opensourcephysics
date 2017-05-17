@@ -1,0 +1,42 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(testthat)
+
+source("./R/ode_generics.R")
+source("./R/ODETest.R")
+source("./R/RK4.R")
+
+ode <- ODETest()
+
+ode_solver <- RK4(ode)
+
+ode_solver <-  setStepSize(ode_solver, 1)
+
+expect_equal(ode_solver@stepSize, 1)
+
+time <- 0
+# ode_solver@ode@state <- getState(ode)
+
+
+expect_equal(getState(ode), c(5, 0))
+
+ode_solver <- init(ode_solver, 1)
+
+expect_equal(getState(ode_solver@ode), c(5, 0))
+
+while (time < 50) {
+        cat(sprintf("%8f %12f %12f \n", time, state[1], getExactSolution(ode, time)))
+    ode_solver <- step(ode_solver)
+    time <-  time + 1
+
+    # exact_solution <- getExactSolution(ode, time)
+}
+
+cat(ode_solver@ode@n)
+```
+

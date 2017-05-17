@@ -1,0 +1,311 @@
+---
+title: "Pendulum - ODE solver"
+output: 
+  html_notebook: 
+    toc: yes
+---
+
+## Pendulum with RK4
+RK4 is less sensitive to changes in the time steps.
+
+```{r}
+library(ggplot2)
+#                                                                   PendulumApp
+source("./R/ode_generics.R")
+source("./R/RK4.R")
+source("./R/PendulumRK4.R")                   # this script uses Euler-Richardson
+
+ode <- new("ODE")
+pendulum <- PendulumRK4()
+
+dt <- 0.001
+theta <- 0.2
+thetaDot <- 0
+
+pendulum@state[3] <- 0      # set time to zero, t = 0
+
+pendulum <- setState(pendulum, theta, thetaDot)
+pendulum <- setStepSize(pendulum, dt = dt) # using stepSize in RK4
+
+pendulum@odeSolver <- setStepSize(pendulum@odeSolver, dt) # set new step size
+
+rowvec <- vector("list")
+i <- 1
+while (pendulum@state[3] <= 1000)    {
+    rowvec[[i]] <- list(state1 = pendulum@state[1], # angle
+                   state2 = pendulum@state[2],      # derivative of the angle
+                   state3 = pendulum@state[3])       # time
+    i <- i + 1
+    pendulum <- step(pendulum)
+}
+DTRK4 <- data.table::rbindlist(rowvec)
+
+ggplot(DTRK4, aes(x = state3, y = state1)) + geom_line(col = "blue")
+ggplot(DTRK4, aes(x = state3, y = state2)) + geom_line(col = "red")
+save(DTRK4, file = "./data/pendulumRK4_1e-3.rda")
+```
+
+
+## PendulumApp with Euler-Richardson. With data table
+Take a look at the plot for time vs. angle and the derivative of the angle.
+Euler solution does not tend to converge with small step sizes.
+
+```{r}
+library(ggplot2)
+#                                                                   PendulumApp
+source("./R/ode_generics.R")
+source("./R/EulerRichardson.R")
+source("./R/Pendulum.R")                   # this script uses Euler-Richardson
+
+ode <- new("ODE")
+pendulum <- Pendulum()
+
+dt <- 0.1
+theta <- 0.2
+thetaDot <- 0
+
+pendulum@state[3] <- 0      # set time to zero, t = 0
+
+pendulum <- setState(pendulum, theta, thetaDot)
+pendulum <- setStepSize(pendulum, dt = dt)    # needs explicit declaration of dt
+
+pendulum@odeSolver <- init(pendulum@odeSolver, 0.123)
+pendulum@odeSolver <- setStepSize(pendulum@odeSolver, dt) # set new step size
+
+rowvec <- vector("list")
+i <- 1
+while (pendulum@state[3] <= 1000)    {
+    rowvec[[i]] <- list(state1 = pendulum@state[1], # angle
+                   state2 = pendulum@state[2],      # derivative of the angle
+                   state3 = pendulum@state[3])       # time
+    i <- i + 1
+    pendulum <- step(pendulum)
+}
+DTER <- data.table::rbindlist(rowvec)
+
+ggplot(DTER, aes(x = state3, y = state1)) + geom_line(col = "blue")
+ggplot(DTER, aes(x = state3, y = state2)) + geom_line(col = "red")
+
+save(DTER, file = "./data/pendulumDTER_1e-1.rda")
+```
+
+## PendulumApp with Euler. With data table
+
+```{r}
+library(ggplot2)
+# ####################################################  Test Pendulum with Euler
+source("./R/ode_generics.R")
+source("./R/Euler.R")
+source("./R/PendulumEuler.R")       # Pendulum script with ODE EUler
+
+ode <- new("ODE")
+pendulum <- PendulumEuler()
+
+dt <- 0.01
+theta <- 0.2
+thetaDot <- 0
+
+pendulum@state[3] <- 0      # set time to zero, t = 0
+
+pendulum <- setState(pendulum, theta, thetaDot)
+stepSize <- dt
+pendulum <- setStepSize(pendulum, stepSize)
+
+pendulum@odeSolver <- setStepSize(pendulum@odeSolver, dt) # set new step size
+
+rowvec <- vector("list")
+i <- 1
+while (pendulum@state[3] <= 1000)    {
+    rowvec[[i]] <- list(state1 = pendulum@state[1], 
+                   state2 = pendulum@state[2], 
+                   state3 = pendulum@state[3])
+    i <- i + 1
+    pendulum <- step(pendulum)
+}
+DTE <- data.table::rbindlist(rowvec)
+
+ggplot(DTE, aes(x = state3, y = state1)) + geom_line(col = "blue")
+ggplot(DTE, aes(x = state3, y = state2)) + geom_line(col = "red")
+
+save(DTE, file = "./data/pendulumDTE_1e-2.rda")
+```
+
+
+## PendulumApp with Euler-Richardson. No data table
+
+```{r}
+#                                                                   PendulumApp
+source("./R/ode_generics.R")
+source("./R/EulerRichardson.R")
+source("./R/Pendulum.R")                   # this script uses Euler-Richardson
+
+ode <- new("ODE")
+pendulum <- Pendulum()
+
+dt <- 0.1
+theta <- 0.2
+thetaDot <- 0
+
+pendulum@state[3] <- 0      # set time to zero, t = 0
+
+pendulum <- setState(pendulum, theta, thetaDot)
+pendulum <- setStepSize(pendulum, dt = dt)    # needs explicit declaration of dt
+
+pendulum@odeSolver <- init(pendulum@odeSolver, 0.123)
+pendulum@odeSolver <- setStepSize(pendulum@odeSolver, dt) # set new step size
+
+while (pendulum@state[3] <= 100)    {
+    cat(sprintf("%12f %12f %12f \n", pendulum@state[1], 
+                pendulum@state[2], pendulum@state[3]))
+    pendulum <- step(pendulum)
+}
+```
+
+## PendulumApp with Euler. No data table
+
+```{r}
+# Using Euler
+# 
+#
+# ####################################################  Test Pendulum with Euler
+library(testthat)
+
+source("./R/ode_generics.R")
+source("./R/Euler.R")
+source("./R/PendulumE.R")       # Pendulum script with ODE EUler
+
+ode <- new("ODE")
+pendulum <- Pendulum()
+
+dt <- 0.1
+theta <- 0.2
+thetaDot <- 0
+
+pendulum@state[3] <- 0      # set time to zero, t = 0
+
+pendulum <- setState(pendulum, theta, thetaDot)
+stepSize <- dt
+pendulum <- setStepSize(pendulum, stepSize)
+
+state <- c(0.2, 0.0, 0.0)
+
+# 
+# 
+expect_equal(pendulum@odeSolver@ode@state, c(0.2, 0.0, 0.0))
+
+    expect_equal(getStepSize(pendulum@odeSolver), 0.1) # get default step size
+
+    # ----------------------------------------- these two vars hold no values
+    # expect_true(length(pendulum@state) == 0)
+    expect_true(length(pendulum@rate)  == 0)
+
+    # +++++++++++++++++++++++++++++++++++++++++ values stored here
+    expect_true(all(pendulum@odeSolver@ode@state == state))
+    expect_true(length(pendulum@odeSolver@ode@rate) == 3)
+
+pendulum@odeSolver <- init(pendulum@odeSolver, 0.123)
+    expect_equal(getStepSize(pendulum@odeSolver), 0.123)
+
+    expect_equal(pendulum@odeSolver@ode@state, state)
+    expect_equal(pendulum@odeSolver@numEqn, 3)
+
+pendulum@odeSolver <- setStepSize(pendulum@odeSolver, dt) # set new step size
+    expect_equal(getStepSize(pendulum@odeSolver), dt)
+
+    expect_true(!is.null(step(pendulum@odeSolver))) # step Euler returns a value
+    expect_true(length(ode@rate)  == 0)
+
+rate <- c(0, 0, 0)
+rate <- vector("numeric")
+    expect_equal(getRate(pendulum@odeSolver@ode, state, rate),
+                 c(0, -0.596008, 1))
+
+    expect_equal(getStepSize(pendulum@odeSolver), dt)
+
+while (pendulum@state[3] <= 100)    {
+   
+    cat(sprintf("%12f %12f %12f \n", pendulum@state[1], 
+                pendulum@state[2], pendulum@state[3]))
+     pendulum <- step(pendulum)
+}
+```
+
+
+```{r}
+# ######################################################### Test EulerRichardson
+# Euler-Richardson class does not implement getState() and getRate() 
+# as in the case of Euler
+library(testthat)
+
+source("./R/ode_generics.R")
+source("./R/ODE.R")
+source("./R/EulerRichardson.R")
+
+state <- c(0, 1, 3)
+rate  <- c(0, 0, 0)
+stepSize <- 0.1
+
+ode <- new("ODE")
+
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ test constructor
+
+expect_error(EulerRichardson(), 'argument ".ode" is missing, with no default')
+
+eulerRichardson <- EulerRichardson(ode)
+
+eulerRichardson@ode@state <-  state                # set a vector for state
+
+
+# ----------------------------------------- these two vars hold no values
+expect_true(length(ode@state) == 0)
+expect_true(length(ode@rate)  == 0)
+
+#                                                  values stored here in ode
+expect_true(all(eulerRichardson@ode@state == state))
+expect_true(length(eulerRichardson@ode@rate) == 0)
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ test init()
+eulerRichardson <- init(eulerRichardson, stepSize)
+
+expect_equal(eulerRichardson@stepSize, stepSize)      # test stepSize
+
+expect_equal(eulerRichardson@ode@state, state)
+expect_equal(eulerRichardson@numEqn, 3)               # number of equations
+
+expect_true(!is.null(step(eulerRichardson)))    # step returns a value not NULL
+expect_true(length(ode@rate)  == 0)                     # rate still empty
+expect_equal(getRate(eulerRichardson@ode), c(0, 0, 0))  # rate has a vector
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ test step()
+#                                rate is zero until we run setState and getRate
+expect_equal(eulerRichardson@midstate, c(0, 0, 0))  # midpoint before step
+
+eulerRichardson <- step(eulerRichardson) 
+expect_equal(eulerRichardson@ode@state, state)
+expect_equal(eulerRichardson@ode@rate, rate)
+expect_equal(eulerRichardson@midstate, state)       # midpoint after step
+
+eulerRichardson <- step(eulerRichardson)
+expect_equal(eulerRichardson@ode@state, state)
+expect_equal(eulerRichardson@ode@rate, rate)
+expect_equal(eulerRichardson@midstate, state)       # midpoint after step
+
+eulerRichardson <- step(eulerRichardson)
+expect_equal(eulerRichardson@ode@state, state)
+expect_equal(eulerRichardson@ode@rate, rate)
+expect_equal(eulerRichardson@midstate, state)       # midpoint after step
+
+eulerRichardson <- step(eulerRichardson) 
+expect_equal(eulerRichardson@ode@state, state)
+expect_equal(eulerRichardson@ode@rate, rate)
+expect_equal(eulerRichardson@midstate, state)       # midpoint after step
+
+# eulerRichardson@ode@state
+# eulerRichardson@ode@rate
+# 
+# getState(eulerRichardson@ode)
+# 
+# getRate(eulerRichardson@ode, eulerRichardson@ode@state, eulerRichardson@ode@rate)
+
+```
+

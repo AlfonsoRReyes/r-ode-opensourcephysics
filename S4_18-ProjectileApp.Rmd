@@ -1,0 +1,287 @@
+---
+title: "ProjectileApp - Euler ODE"
+output: html_notebook
+---
+
+## Lessons learned
+
+* when a class is mentioned in a slot, it will automatically initialize but 
+parameters are not passed.
+
+* start developing in a unique file to avoid collisions and get clearer generics
+on sight.
+
+```{r}
+#                                                      test Projectile with RK4
+#                                                      originally uses Euler
+library(data.table)
+library(ggplot2)
+
+source("./R/ode_generics.R")
+source("./R/Projectile.R")
+
+
+x <- 0; vx <- 10; y <- 0; vy <- 10
+state <- c(x, vx, y, vy, 0)
+dt <- 0.01
+
+projectile <- Projectile()
+
+projectile <- setState(projectile, x, vx, y, vy)
+projectile@odeSolver <- init(projectile@odeSolver, 0.123)
+projectile@odeSolver <- setStepSize(projectile@odeSolver, dt) 
+
+rowV <- vector("list")
+i <- 1
+while (projectile@state[3] >= 0)    {                
+    # state[5]:           state[1]: x;  # state[3]: y
+    cat(sprintf("%12f %12f %12f \n", projectile@state[5], 
+                projectile@state[1], projectile@state[3]))
+    rowV[[i]] <- list(state1 = projectile@state[1], 
+                      state3 = projectile@state[3], 
+                      state5 = projectile@state[5])
+    projectile <- step(projectile)
+    i <- i + 1
+}
+
+datatable <- data.table::rbindlist(rowV)
+datatable
+
+
+qplot(state1, state3, data = datatable)
+qplot(state1, state5, data = datatable)
+```
+
+
+
+
+
+```{r}
+# run ProjectileApp using the R scripts only
+
+source("./R/ode_generics.R")
+source("./R/Projectile.R")
+
+
+x <- 0; vx <- 10; y <- 0; vy <- 10
+state <- c(x, vx, y, vy, 0)
+dt <- 0.01
+
+projectile <- Projectile()
+
+projectile <- setState(projectile, x, vx, y, vy)
+projectile@odeSolver <- init(projectile@odeSolver, 0.123)
+projectile@odeSolver <- setStepSize(projectile@odeSolver, dt) 
+
+while (projectile@state[3] >= 0)    {                 # state[3]: y
+    
+    # state[5]:           state[1]: x
+    cat(sprintf("%12f %12f %12f \n", projectile@state[5], 
+                projectile@state[1], projectile@state[3]))
+    
+    projectile <- step(projectile)
+}
+
+```
+
+
+
+```{r}
+# these test performed on ProjectileApp.R which contains all classes
+#
+# ############################################################  Test Projectile
+library(testthat)
+source("./R/ProjectileApp.R")
+
+ode <- new("ODE")
+
+projectile <- Projectile()
+
+x <- 0; vx <- 10; y <- 0; vy <- 10
+state <- c(x, vx, y, vy, 0)
+dt <- 0.01
+
+
+projectile@odeSolver@ode@state <- state
+
+    expect_equal(getStepSize(projectile@odeSolver), 0.1) # get default step size
+    
+    # ----------------------------------------- these two vars hold no values
+    expect_true(length(projectile@state) == 0)
+    expect_true(length(projectile@rate)  == 0)
+    
+    # +++++++++++++++++++++++++++++++++++++++++ values stored here
+    expect_true(all(projectile@odeSolver@ode@state == state))
+    expect_true(length(projectile@odeSolver@ode@rate) == 0)
+
+projectile@odeSolver <- init(projectile@odeSolver, 0.123)
+
+    expect_equal(projectile@odeSolver@ode@state, state)
+    expect_equal(projectile@odeSolver@numEqn, 5)
+
+projectile@odeSolver <- setStepSize(projectile@odeSolver, dt) # set new step size
+    expect_equal(getStepSize(projectile@odeSolver), dt)
+
+    expect_true(!is.null(step(projectile@odeSolver))) # step Euler returns a value
+    expect_true(length(ode@rate)  == 0)
+
+rate <- c(0, 0, 0, 0, 0)
+rate <- vector("numeric")
+    expect_equal(getRate(projectile@odeSolver@ode, state, rate), 
+                 c(10.0,  0.0, 10.0, -9.8,  1.0))
+
+    expect_equal(getStepSize(projectile@odeSolver), dt)
+
+while (TRUE)    {
+    projectile <- step(projectile)
+    cat(projectile@state[5], projectile@state[1],
+        # projectile@state[5], projectile@state[3],
+        projectile@state[3],"\n")
+}
+```
+
+
+
+```{r}
+# #################################################################  Test Euler
+
+
+```
+
+
+
+
+
+```{r}
+library(testthat)
+source("./R/ProjectileApp.R")
+
+odeObj <- new("ODE")
+class(odeObj)
+
+odesolver <- ODESolver()
+class(odesolver)
+
+# Euler()
+```
+
+
+
+```{r}
+# putting all classes together in script ProjectileApp
+library(testthat)
+source("./R/ProjectileApp.R")
+
+
+
+############################################################################ ProjectileApp
+projectile <- Projectile()
+    expect_true(class(projectile) == "Projectile")
+    expect_equal(length(projectile@state), 0)
+    expect_equal(length(projectile@rate), 0)
+    
+    expect_true(projectile@odeSolver@stepSize == 0.1)
+    expect_true(projectile@odeSolver@numEqn == 0)
+    
+
+############################################################################# initialize()
+x <- 0; vx <- 10; y <- 0; vy <- 10
+state <- c(x, vx, y, vy, 0)
+dt <- 0.0123
+
+    expect_equal(state, c(0, 10, 0, 10, 0))    
+projectile <- setState(projectile, x, vx, y, vy)    
+    expect_equal(projectile@state, state)    
+
+projectile <- setStepSize(projectile, dt)
+    expect_equal(projectile@odeSolver@stepSize, dt)
+    
+####################################################################### doStep()
+for (i in 1:10) {
+    projectile <- step(projectile)   
+    # cat(projectile@state[5], projectile@state[1], projectile@state[3], "\n")
+}      
+
+```
+
+
+
+
+```{r}
+library(testthat)
+
+# source("./R/ode_generics.R")
+source("./R/ProjectileApp.R")
+
+
+############################################################################ ProjectileApp
+projectile <- Projectile()
+    expect_true(class(projectile) == "Projectile")
+    expect_equal(length(projectile@state), 0)
+    expect_equal(length(projectile@rate), 0)
+    
+    expect_true(projectile@odeSolver@stepSize == 0.1)
+    expect_true(projectile@odeSolver@numEqn == 0)
+    
+
+############################################################################# initialize()
+x <- 0; vx <- 10; y <- 0; vy <- 10
+state <- c(x, vx, y, vy, 0)
+dt <- 0.0123
+
+    expect_equal(state, c(0, 10, 0, 10, 0))    
+projectile <- setState(projectile, x, vx, y, vy)    
+    expect_equal(projectile@state, state)    
+
+projectile <- setStepSize(projectile, dt)
+    expect_equal(projectile@odeSolver@stepSize, dt)
+    
+############################################################################# doStep()
+for (i in 1:10) {
+    projectile <- step(projectile)   
+    cat(projectile@state[5], projectile@state[1], projectile@state[3], "\n")
+}    
+# # 
+# projectile <- step(projectile)
+
+# projectile@rate
+# projectile@state
+
+
+```
+
+
+
+
+```{r}
+# a more elegant version of the chunk below. But it doesn't work because R
+# works differently than Java or Python because of its functional programming
+# approach. The reference to the reference to `oòdesolver` will not work.
+
+# run ProjectileApp using the R scripts only
+
+source("./R/ode_generics.R")
+source("./R/Euler.R")
+source("./R/Projectile.R")
+
+
+x <- 0; vx <- 10; y <- 0; vy <- 10
+state <- c(x, vx, y, vy, 0)
+dt <- 0.01
+
+projectile <- Projectile()
+
+projectile <- setState(projectile, x, vx, y, vy)
+odesolver <- projectile@odeSolver 
+
+odesolver <- init(odesolver, 0.123)
+odesolver <- setStepSize(odesolver, dt) 
+
+while (projectile@state[1] <= 100)    { # change condition due to infinite loop              
+    projectile <- step(projectile)
+    # state[5]:           state[1]: x    # state[3]: y
+    cat(sprintf("%12f %12f %12f \n", projectile@state[5], 
+                projectile@state[1], projectile@state[3]))
+}
+
+```
