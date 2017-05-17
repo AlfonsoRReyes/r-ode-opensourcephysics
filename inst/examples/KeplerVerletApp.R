@@ -32,7 +32,7 @@ particle@odeSolver <- odeSolver
 
 initialEnergy <- getEnergy(particle)
 i <- 0
-while (i < 25) {
+while (getTime(particle) <= 0.33) {
     # odeSolver <- step(odeSolver)
     particle <- doStep(particle)
     # odeSolver <- particle@odeSolver
