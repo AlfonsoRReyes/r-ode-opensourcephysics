@@ -44,8 +44,6 @@ setMethod("getRateCounter", "Verlet", function(object, ...) {
 setMethod("step", "Verlet", function(object, ...) {
     # state[]: x1, d x1/dt, x2, d x2/dt .... xN, d xN/dt, t
     state <- getState(object@ode)                         # get the state vector
-    # cat(sprintf("state=%s \n", state))
-    # cat("state:");print(state)
     
     if (length(state) != object@numEqn) {
         object <- init(object, object@stepSize)
@@ -74,7 +72,6 @@ setMethod("step", "Verlet", function(object, ...) {
         # increment the velocities with the average rate
         state[i] <- state[i] + object@stepSize * (object@rate1[i] +
             object@rate2[i]) / 2.0 
-
         # cat(sprintf("i2=%3d, state1=%12f, rate2=%11f \n", i-1, state[i], object@rate2[i]))
     }
     if (object@numEqn%%2 == 1) { # last equation if  we have an odd number of equations
@@ -88,7 +85,7 @@ setMethod("step", "Verlet", function(object, ...) {
         #             object@rate1[object@numEqn]))
     }
     object@ode@state <- state
-    object                          # use this object to reassign in R
+    object                                 # use this object to reassign in R
 }) 
 
 
