@@ -34,6 +34,9 @@ public class FallingParticleODEApp extends AbstractCalculation {
     solver.setStepSize(control.getDouble("dt"));
     while(ball.state[0]>0) {
       solver.step();
+      System.out.format("%12f %12f %12f  \n", ball.state[0],
+    		  ball.state[1], 
+    		  ball.state[2]);
     }
     control.println("final time = "+ball.state[2]);
     control.println("y = "+ball.state[0]+" v = "+ball.state[1]);

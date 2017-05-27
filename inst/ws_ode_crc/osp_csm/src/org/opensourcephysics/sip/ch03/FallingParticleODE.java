@@ -18,6 +18,7 @@ import org.opensourcephysics.numerics.*;
 public class FallingParticleODE implements ODE {
   final static double g = 9.8;
   double[] state = new double[3];
+  double[] rate = new double[3];    // added by ARR
 
   /**
    * Constructs the FallingParticleODE model with the given intial postion and velocity.

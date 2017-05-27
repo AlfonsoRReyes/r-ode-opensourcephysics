@@ -19,7 +19,7 @@ public class ComparisonRK45App {
      ODEAdaptiveSolver ode_solver= new RK45(ode);
 //    ODEAdaptiveSolver ode_solver = new Dopri853(ode);
     ode_solver.setStepSize(1);
-    ode_solver.setTolerance(1e-8);
+    ode_solver.setTolerance(1e-6);
     double time = 0;
     double[] state = ode.getState();
     while(time<50) {

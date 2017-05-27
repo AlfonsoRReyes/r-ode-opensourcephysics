@@ -1,3 +1,8 @@
+// coefficients do not match https://en.wikipedia.org/wiki/Dormand%E2%80%93Prince_method 
+// coefficients match RK5(4)6M in Goodreader/r-simulation/1-s2.0-0771050X80900133-main.pdf
+// downloaded from:
+// http://www.sciencedirect.com/science/article/pii/0771050X80900133/pdf?md5=7337cc66c9ff13c6a764d87cd2327ae1&pid=1-s2.0-0771050X80900133-main.pdf
+
 // with debug prints
 
 /*
