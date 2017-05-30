@@ -82,6 +82,7 @@ public class SHOApp extends AbstractSimulation implements  PropertyChangeListene
     */
    protected void doStep() {
       solver.step();
+      System.out.format("%12f %12f %12f \n", sho.state[0], sho.state[1], sho.state[2]);
       double x = sho.state[0];
       double v = sho.state[1];
       double t = sho.state[2];
